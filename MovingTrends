@@ -55,3 +55,673 @@ plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)  # Adjust subplot 
 
 # Show the plot
 plt.show()
+
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
+# Historical data for inbound net inflow (example)
+inbound_net_inflow = np.array([5700, 4800, 4600, 4300, 4300, 4000, 3700, 3300, 2900, 2900])
+
+# Time periods (example)
+time_periods = np.array(range(1, len(inbound_net_inflow) + 1)).reshape(-1, 1)
+
+# Create and fit the linear regression model
+model = LinearRegression()
+model.fit(time_periods, inbound_net_inflow)
+
+# Forecast for the next 3 time periods (example)
+future_time_periods = np.array(range(len(inbound_net_inflow) + 1, len(inbound_net_inflow) + 4)).reshape(-1, 1)
+forecast = model.predict(future_time_periods)
+
+print("Forecasted inbound net inflow for the next 3 time periods:")
+print(forecast)
+
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.linear_model import LinearRegression
+
+# Inbound net inflow data for the given cities
+inbound_cities = ['Sacramento, CA', 'Las Vegas, NV', 'Sarasota, FL', 'Cape Coral, FL', 'Phoenix, AZ',
+                  'Orlando, FL', 'Myrtle Beach, SC', 'Salisbury, MD', 'Hilo, HI', 'Jacksonville, FL']
+historical_data = {
+    'Sacramento, CA': [5700, 4800, 4600, 4300, 4300, 4000, 3700, 3300, 2900, 2900],
+    'Las Vegas, NV': [4800, 4700, 4600, 4400, 4200, 4000, 3700, 3400, 3100, 2900],
+    'Sarasota, FL': [4600, 4500, 4300, 4100, 4000, 3800, 3600, 3300, 3100, 2900],
+    'Cape Coral, FL': [4300, 4200, 4100, 3900, 3800, 3600, 3300, 3000, 2800, 2600],
+    'Phoenix, AZ': [4300, 4100, 4000, 3800, 3700, 3500, 3200, 2900, 2700, 2500],
+    'Orlando, FL': [4000, 3900, 3800, 3600, 3500, 3300, 3100, 2800, 2600, 2400],
+    'Myrtle Beach, SC': [3700, 3600, 3500, 3300, 3200, 3000, 2800, 2500, 2300, 2100],
+    'Salisbury, MD': [3300, 3200, 3100, 2900, 2800, 2600, 2400, 2100, 1900, 1700],
+    'Hilo, HI': [2900, 2800, 2700, 2500, 2400, 2200, 2000, 1700, 1500, 1300],
+    'Jacksonville, FL': [2900, 2700, 2600, 2400, 2300, 2100, 1900, 1600, 1400, 1200]
+}
+
+# Forecasting function for a given city
+def forecast_city(city_data):
+    model = LinearRegression()
+    time_periods = np.array(range(1, len(city_data) + 1)).reshape(-1, 1)
+    model.fit(time_periods, city_data)
+    future_time_periods = np.array(range(len(city_data) + 1, len(city_data) + 4)).reshape(-1, 1)
+    forecast = model.predict(future_time_periods)
+    return forecast
+
+# Plot historical data and forecasts for each city
+plt.figure(figsize=(12, 8))
+
+for city in inbound_cities:
+    city_data = historical_data[city]
+    forecast = forecast_city(city_data)
+
+    plt.plot(range(1, len(city_data) + 1), city_data, marker='o', linestyle='-', label=f'{city} Historical Data')
+    plt.plot(range(len(city_data) + 1, len(city_data) + 4), forecast, marker='o', linestyle='--', label=f'{city} Forecast')
+
+# Add labels and title
+plt.title('Forecast of Inbound Net Inflow for Selected Cities')
+plt.xlabel('Time Period')
+plt.ylabel('Inbound Net Inflow')
+plt.xticks(np.arange(1, len(city_data) + 4, 1))  # Adjust x-axis ticks for future periods
+
+# Add legend with smaller font size and outside the plot area
+plt.legend(fontsize='x-small', loc='upper left', bbox_to_anchor=(1, 1))
+
+# Show plot
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.linear_model import LinearRegression
+
+# Outbound net outflow data for the given cities
+outbound_cities = ['San Francisco, CA', 'Los Angeles, CA', 'New York, NY', 'Seattle, WA', 'Washington DC',
+                   'Chicago, IL', 'Boston, MA', 'Philadelphia, PA', 'Denver, CO', 'Dallas, TX']
+historical_data_outbound = {
+    'San Francisco, CA': [26800, 26400, 26000, 25600, 25200, 24800, 24400, 24000, 23600, 23200],
+    'Los Angeles, CA': [26700, 26300, 25900, 25500, 25100, 24700, 24300, 23900, 23500, 23100],
+    'New York, NY': [25900, 25500, 25100, 24700, 24300, 23900, 23500, 23100, 22700, 22300],
+    'Seattle, WA': [18000, 17600, 17200, 16800, 16400, 16000, 15600, 15200, 14800, 14400],
+    'Washington DC': [14700, 14300, 13900, 13500, 13100, 12700, 12300, 11900, 11500, 11100],
+    'Chicago, IL': [9800, 9400, 9000, 8600, 8200, 7800, 7400, 7000, 6600, 6200],
+    'Boston, MA': [6700, 6300, 5900, 5500, 5100, 4700, 4300, 3900, 3500, 3100],
+    'Philadelphia, PA': [3500, 3100, 2700, 2300, 1900, 1500, 1100, 700, 300, -100],
+    'Denver, CO': [2900, 2500, 2100, 1700, 1300, 900, 500, 100, -300, -700],
+    'Dallas, TX': [1800, 1400, 1000, 600, 200, -200, -600, -1000, -1400, -1800]
+}
+
+# Forecasting function for a given city (outbound)
+def forecast_city_outbound(city_data_outbound):
+    model_outbound = LinearRegression()
+    time_periods_outbound = np.array(range(1, len(city_data_outbound) + 1)).reshape(-1, 1)
+    model_outbound.fit(time_periods_outbound, city_data_outbound)
+    future_time_periods_outbound = np.array(range(len(city_data_outbound) + 1, len(city_data_outbound) + 4)).reshape(-1, 1)
+    forecast_outbound = model_outbound.predict(future_time_periods_outbound)
+    return forecast_outbound
+
+# Plot historical data and forecasts for each city (outbound)
+plt.figure(figsize=(12, 8))
+
+for city in outbound_cities:
+    city_data_outbound = historical_data_outbound[city]
+    forecast_outbound = forecast_city_outbound(city_data_outbound)
+
+    plt.plot(range(1, len(city_data_outbound) + 1), city_data_outbound, marker='o', linestyle='-', label=f'{city}')
+    plt.plot(range(len(city_data_outbound) + 1, len(city_data_outbound) + 4), forecast_outbound, marker='o', linestyle='--')
+
+# Add labels and title
+plt.title('Forecast of Outbound Net Outflow for Selected Cities')
+plt.xlabel('Time Period')
+plt.ylabel('Outbound Net Outflow')
+plt.xticks(np.arange(1, len(city_data_outbound) + 4, 1))  # Adjust x-axis ticks for future periods
+
+# Add legend with smaller font size
+plt.legend(loc='upper left', fontsize='small', bbox_to_anchor=(1, 1))
+
+# Show plot
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.linear_model import LinearRegression
+
+# Historical and forecasted data for Sacramento, CA
+historical_data_sacramento = [5700, 4800, 4600, 4300, 4300, 4000, 3700, 3300, 2900, 2900]
+forecasted_data_sacramento = [2900, 2800, 2700]  # Forecasted for the next three time periods
+
+# Time periods
+time_periods = range(1, len(historical_data_sacramento) + len(forecasted_data_sacramento) + 1)
+
+# Plot historical data
+plt.plot(time_periods[:len(historical_data_sacramento)], historical_data_sacramento, marker='o', linestyle='-', label='Historical Data')
+
+# Plot forecasted data
+plt.plot(time_periods[len(historical_data_sacramento):], forecasted_data_sacramento, marker='o', linestyle='--', label='Forecast')
+
+# Add labels and title
+plt.title('Forecast of Inbound Net Inflow for Sacramento, CA')
+plt.xlabel('Time Period')
+plt.ylabel('Inbound Net Inflow')
+plt.xticks(time_periods)
+plt.grid(True)
+plt.legend()
+
+# Show plot
+plt.tight_layout()
+plt.show()
+
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.linear_model import LinearRegression
+
+# Historical and forecasted data for Las Vegas, NV
+historical_data_las_vegas = [4800, 4700, 4600, 4400, 4200, 4000, 3700, 3400, 3100, 2900]
+forecasted_data_las_vegas = [2900, 2800, 2700]  # Forecasted for the next three time periods
+
+# Time periods
+time_periods = range(1, len(historical_data_las_vegas) + len(forecasted_data_las_vegas) + 1)
+
+# Plot historical data
+plt.plot(time_periods[:len(historical_data_las_vegas)], historical_data_las_vegas, marker='o', linestyle='-', label='Historical Data')
+
+# Plot forecasted data
+plt.plot(time_periods[len(historical_data_las_vegas):], forecasted_data_las_vegas, marker='o', linestyle='--', label='Forecast')
+
+# Add labels and title
+plt.title('Forecast of Inbound Net Inflow for Las Vegas, NV')
+plt.xlabel('Time Period')
+plt.ylabel('Inbound Net Inflow')
+plt.xticks(time_periods)
+plt.grid(True)
+plt.legend()
+
+# Show plot
+plt.tight_layout()
+plt.show()
+
+import matplotlib.pyplot as plt
+
+# Historical and forecasted data for Sarasota, FL (inbound net inflow)
+historical_data_sarasota = [4600, 4500, 4400, 4300, 4200, 4100, 4000, 3900, 3800, 3700]
+forecasted_data_sarasota = [3700, 3600, 3500]  # Forecasted for the next three time periods
+
+# Time periods
+time_periods = range(1, len(historical_data_sarasota) + len(forecasted_data_sarasota) + 1)
+
+# Plot historical data
+plt.plot(time_periods[:len(historical_data_sarasota)], historical_data_sarasota, marker='o', linestyle='-', label='Historical Data')
+
+# Plot forecasted data
+plt.plot(time_periods[len(historical_data_sarasota):], forecasted_data_sarasota, marker='o', linestyle='--', label='Forecast')
+
+# Add labels and title
+plt.title('Forecast of Inbound Net Inflow for Sarasota, FL')
+plt.xlabel('Time Period')
+plt.ylabel('Inbound Net Inflow')
+plt.xticks(time_periods)
+plt.grid(True)
+plt.legend()
+
+# Show plot
+plt.tight_layout()
+plt.show()
+
+import matplotlib.pyplot as plt
+
+# Historical and forecasted data for Cape Coral, FL (inbound net inflow)
+historical_data_cape_coral = [4300, 4200, 4100, 4000, 3900, 3800, 3700, 3600, 3500, 3400]
+forecasted_data_cape_coral = [3400, 3300, 3200]  # Forecasted for the next three time periods
+
+# Time periods
+time_periods = range(1, len(historical_data_cape_coral) + len(forecasted_data_cape_coral) + 1)
+
+# Plot historical data
+plt.plot(time_periods[:len(historical_data_cape_coral)], historical_data_cape_coral, marker='o', linestyle='-', label='Historical Data')
+
+# Plot forecasted data
+plt.plot(time_periods[len(historical_data_cape_coral):], forecasted_data_cape_coral, marker='o', linestyle='--', label='Forecast')
+
+# Add labels and title
+plt.title('Forecast of Inbound Net Inflow for Cape Coral, FL')
+plt.xlabel('Time Period')
+plt.ylabel('Inbound Net Inflow')
+plt.xticks(time_periods)
+plt.grid(True)
+plt.legend()
+
+# Show plot
+plt.tight_layout()
+plt.show()
+
+import matplotlib.pyplot as plt
+
+# Historical and forecasted data for Phoenix, AZ (inbound net inflow)
+historical_data_phoenix = [4300, 4100, 4000, 3900, 3800, 3700, 3600, 3500, 3400]
+forecasted_data_phoenix = [3400, 3300, 3200]  # Forecasted for the next three time periods
+
+# Time periods
+time_periods = range(1, len(historical_data_phoenix) + len(forecasted_data_phoenix) + 1)
+
+# Plot historical data
+plt.plot(time_periods[:len(historical_data_phoenix)], historical_data_phoenix, marker='o', linestyle='-', label='Historical Data')
+
+# Plot forecasted data
+plt.plot(time_periods[len(historical_data_phoenix):], forecasted_data_phoenix, marker='o', linestyle='--', label='Forecast')
+
+# Add labels and title
+plt.title('Forecast of Inbound Net Inflow for Phoenix, AZ')
+plt.xlabel('Time Period')
+plt.ylabel('Inbound Net Inflow')
+plt.xticks(time_periods)
+plt.grid(True)
+plt.legend()
+
+# Show plot
+plt.tight_layout()
+plt.show()
+
+import matplotlib.pyplot as plt
+
+# Historical and forecasted data for Orlando, FL (inbound net inflow)
+historical_data_orlando = [4000, 3900, 3800, 3700, 3600, 3500, 3400, 3300, 3200, 3100]
+forecasted_data_orlando = [3100, 3000, 2900]  # Forecasted for the next three time periods
+
+# Time periods
+time_periods = range(1, len(historical_data_orlando) + len(forecasted_data_orlando) + 1)
+
+# Plot historical data
+plt.plot(time_periods[:len(historical_data_orlando)], historical_data_orlando, marker='o', linestyle='-', label='Historical Data')
+
+# Plot forecasted data
+plt.plot(time_periods[len(historical_data_orlando):], forecasted_data_orlando, marker='o', linestyle='--', label='Forecast')
+
+# Add labels and title
+plt.title('Forecast of Inbound Net Inflow for Orlando, FL')
+plt.xlabel('Time Period')
+plt.ylabel('Inbound Net Inflow')
+plt.xticks(time_periods)
+plt.grid(True)
+plt.legend()
+
+# Show plot
+plt.tight_layout()
+plt.show()
+
+import matplotlib.pyplot as plt
+
+# Historical and forecasted data for Myrtle Beach, SC (inbound net inflow)
+historical_data_myrtle_beach = [3700, 3600, 3500, 3400, 3300, 3200, 3100, 3000, 2900, 2800]
+forecasted_data_myrtle_beach = [2800, 2700, 2600]  # Forecasted for the next three time periods
+
+# Time periods
+time_periods = range(1, len(historical_data_myrtle_beach) + len(forecasted_data_myrtle_beach) + 1)
+
+# Plot historical data
+plt.plot(time_periods[:len(historical_data_myrtle_beach)], historical_data_myrtle_beach, marker='o', linestyle='-', label='Historical Data')
+
+# Plot forecasted data
+plt.plot(time_periods[len(historical_data_myrtle_beach):], forecasted_data_myrtle_beach, marker='o', linestyle='--', label='Forecast')
+
+# Add labels and title
+plt.title('Forecast of Inbound Net Inflow for Myrtle Beach, SC')
+plt.xlabel('Time Period')
+plt.ylabel('Inbound Net Inflow')
+plt.xticks(time_periods)
+plt.grid(True)
+plt.legend()
+
+# Show plot
+plt.tight_layout()
+plt.show()
+
+import matplotlib.pyplot as plt
+
+# Historical and forecasted data for Salisbury, MD (inbound net inflow)
+historical_data_salisbury = [3300, 3200, 3100, 3000, 2900, 2800, 2700, 2600, 2500, 2400]
+forecasted_data_salisbury = [2400, 2300, 2200]  # Forecasted for the next three time periods
+
+# Time periods
+time_periods = range(1, len(historical_data_salisbury) + len(forecasted_data_salisbury) + 1)
+
+# Plot historical data
+plt.plot(time_periods[:len(historical_data_salisbury)], historical_data_salisbury, marker='o', linestyle='-', label='Historical Data')
+
+# Plot forecasted data
+plt.plot(time_periods[len(historical_data_salisbury):], forecasted_data_salisbury, marker='o', linestyle='--', label='Forecast')
+
+# Add labels and title
+plt.title('Forecast of Inbound Net Inflow for Salisbury, MD')
+plt.xlabel('Time Period')
+plt.ylabel('Inbound Net Inflow')
+plt.xticks(time_periods)
+plt.grid(True)
+plt.legend()
+
+# Show plot
+plt.tight_layout()
+plt.show()
+
+import matplotlib.pyplot as plt
+
+# Historical and forecasted data for Hilo, HI (inbound net inflow)
+historical_data_hilo = [2900, 2800, 2700, 2600, 2500, 2400, 2300, 2200, 2100, 2000]
+forecasted_data_hilo = [2000, 1900, 1800]  # Forecasted for the next three time periods
+
+# Time periods
+time_periods = range(1, len(historical_data_hilo) + len(forecasted_data_hilo) + 1)
+
+# Plot historical data
+plt.plot(time_periods[:len(historical_data_hilo)], historical_data_hilo, marker='o', linestyle='-', label='Historical Data')
+
+# Plot forecasted data
+plt.plot(time_periods[len(historical_data_hilo):], forecasted_data_hilo, marker='o', linestyle='--', label='Forecast')
+
+# Add labels and title
+plt.title('Forecast of Inbound Net Inflow for Hilo, HI')
+plt.xlabel('Time Period')
+plt.ylabel('Inbound Net Inflow')
+plt.xticks(time_periods)
+plt.grid(True)
+plt.legend()
+
+# Show plot
+plt.tight_layout()
+plt.show()
+
+import matplotlib.pyplot as plt
+
+# Historical and forecasted data for Jacksonville, FL (inbound net inflow)
+historical_data_jacksonville = [2900, 2800, 2700, 2600, 2500, 2400, 2300, 2200, 2100, 2000]
+forecasted_data_jacksonville = [2000, 1900, 1800]  # Forecasted for the next three time periods
+
+# Time periods
+time_periods = range(1, len(historical_data_jacksonville) + len(forecasted_data_jacksonville) + 1)
+
+# Plot historical data
+plt.plot(time_periods[:len(historical_data_jacksonville)], historical_data_jacksonville, marker='o', linestyle='-', label='Historical Data')
+
+# Plot forecasted data
+plt.plot(time_periods[len(historical_data_jacksonville):], forecasted_data_jacksonville, marker='o', linestyle='--', label='Forecast')
+
+# Add labels and title
+plt.title('Forecast of Inbound Net Inflow for Jacksonville, FL')
+plt.xlabel('Time Period')
+plt.ylabel('Inbound Net Inflow')
+plt.xticks(time_periods)
+plt.grid(True)
+plt.legend()
+
+# Show plot
+plt.tight_layout()
+plt.show()
+
+import matplotlib.pyplot as plt
+
+# Historical and forecasted data for San Francisco, CA (inbound net inflow)
+historical_data_san_francisco = [26800, 26700, 26600, 26500, 26400, 26300, 26200, 26100, 26000, 25900]
+forecasted_data_san_francisco = [25900, 25800, 25700]  # Forecasted for the next three time periods
+
+# Time periods
+time_periods = range(1, len(historical_data_san_francisco) + len(forecasted_data_san_francisco) + 1)
+
+# Plot historical data
+plt.plot(time_periods[:len(historical_data_san_francisco)], historical_data_san_francisco, marker='o', linestyle='-', label='Historical Data')
+
+# Plot forecasted data
+plt.plot(time_periods[len(historical_data_san_francisco):], forecasted_data_san_francisco, marker='o', linestyle='--', label='Forecast')
+
+# Add labels and title
+plt.title('Forecast of Inbound Net Inflow for San Francisco, CA')
+plt.xlabel('Time Period')
+plt.ylabel('Inbound Net Inflow')
+plt.xticks(time_periods)
+plt.grid(True)
+plt.legend()
+
+# Show plot
+plt.tight_layout()
+plt.show()
+
+import matplotlib.pyplot as plt
+
+# Historical and forecasted data for Los Angeles, CA (inbound net inflow)
+historical_data_los_angeles = [26700, 26600, 26500, 26400, 26300, 26200, 26100, 26000, 25900, 25800]
+forecasted_data_los_angeles = [25800, 25700, 25600]  # Forecasted for the next three time periods
+
+# Time periods
+time_periods = range(1, len(historical_data_los_angeles) + len(forecasted_data_los_angeles) + 1)
+
+# Plot historical data
+plt.plot(time_periods[:len(historical_data_los_angeles)], historical_data_los_angeles, marker='o', linestyle='-', label='Historical Data')
+
+# Plot forecasted data
+plt.plot(time_periods[len(historical_data_los_angeles):], forecasted_data_los_angeles, marker='o', linestyle='--', label='Forecast')
+
+# Add labels and title
+plt.title('Forecast of Inbound Net Inflow for Los Angeles, CA')
+plt.xlabel('Time Period')
+plt.ylabel('Inbound Net Inflow')
+plt.xticks(time_periods)
+plt.grid(True)
+plt.legend()
+
+# Show plot
+plt.tight_layout()
+plt.show()
+
+import matplotlib.pyplot as plt
+
+# Historical and forecasted data for New York, NY (inbound net inflow)
+historical_data_new_york = [25900, 25800, 25700, 25600, 25500, 25400, 25300, 25200, 25100, 25000]
+forecasted_data_new_york = [25000, 24900, 24800]  # Forecasted for the next three time periods
+
+# Time periods
+time_periods = range(1, len(historical_data_new_york) + len(forecasted_data_new_york) + 1)
+
+# Plot historical data
+plt.plot(time_periods[:len(historical_data_new_york)], historical_data_new_york, marker='o', linestyle='-', label='Historical Data')
+
+# Plot forecasted data
+plt.plot(time_periods[len(historical_data_new_york):], forecasted_data_new_york, marker='o', linestyle='--', label='Forecast')
+
+# Add labels and title
+plt.title('Forecast of Inbound Net Inflow for New York, NY')
+plt.xlabel('Time Period')
+plt.ylabel('Inbound Net Inflow')
+plt.xticks(time_periods)
+plt.grid(True)
+plt.legend()
+
+# Show plot
+plt.tight_layout()
+plt.show()
+
+import matplotlib.pyplot as plt
+
+# Historical and forecasted data for Seattle, WA (inbound net inflow)
+historical_data_seattle = [18000, 17900, 17800, 17700, 17600, 17500, 17400, 17300, 17200, 17100]
+forecasted_data_seattle = [17100, 17000, 16900]  # Forecasted for the next three time periods
+
+# Time periods
+time_periods = range(1, len(historical_data_seattle) + len(forecasted_data_seattle) + 1)
+
+# Plot historical data
+plt.plot(time_periods[:len(historical_data_seattle)], historical_data_seattle, marker='o', linestyle='-', label='Historical Data')
+
+# Plot forecasted data
+plt.plot(time_periods[len(historical_data_seattle):], forecasted_data_seattle, marker='o', linestyle='--', label='Forecast')
+
+# Add labels and title
+plt.title('Forecast of Inbound Net Inflow for Seattle, WA')
+plt.xlabel('Time Period')
+plt.ylabel('Inbound Net Inflow')
+plt.xticks(time_periods)
+plt.grid(True)
+plt.legend()
+
+# Show plot
+plt.tight_layout()
+plt.show()
+
+import matplotlib.pyplot as plt
+
+# Historical and forecasted data for Washington DC (inbound net inflow)
+historical_data_dc = [14700, 14600, 14500, 14400, 14300, 14200, 14100, 14000, 13900, 13800]
+forecasted_data_dc = [13800, 13700, 13600]  # Forecasted for the next three time periods
+
+# Time periods
+time_periods = range(1, len(historical_data_dc) + len(forecasted_data_dc) + 1)
+
+# Plot historical data
+plt.plot(time_periods[:len(historical_data_dc)], historical_data_dc, marker='o', linestyle='-', label='Historical Data')
+
+# Plot forecasted data
+plt.plot(time_periods[len(historical_data_dc):], forecasted_data_dc, marker='o', linestyle='--', label='Forecast')
+
+# Add labels and title
+plt.title('Forecast of Inbound Net Inflow for Washington DC')
+plt.xlabel('Time Period')
+plt.ylabel('Inbound Net Inflow')
+plt.xticks(time_periods)
+plt.grid(True)
+plt.legend()
+
+# Show plot
+plt.tight_layout()
+plt.show()
+
+import matplotlib.pyplot as plt
+
+# Historical and forecasted data for Chicago, IL (inbound net inflow)
+historical_data_chicago = [9800, 9700, 9600, 9500, 9400, 9300, 9200, 9100, 9000, 8900]
+forecasted_data_chicago = [8900, 8800, 8700]  # Forecasted for the next three time periods
+
+# Time periods
+time_periods = range(1, len(historical_data_chicago) + len(forecasted_data_chicago) + 1)
+
+# Plot historical data
+plt.plot(time_periods[:len(historical_data_chicago)], historical_data_chicago, marker='o', linestyle='-', label='Historical Data')
+
+# Plot forecasted data
+plt.plot(time_periods[len(historical_data_chicago):], forecasted_data_chicago, marker='o', linestyle='--', label='Forecast')
+
+# Add labels and title
+plt.title('Forecast of Inbound Net Inflow for Chicago, IL')
+plt.xlabel('Time Period')
+plt.ylabel('Inbound Net Inflow')
+plt.xticks(time_periods)
+plt.grid(True)
+plt.legend()
+
+# Show plot
+plt.tight_layout()
+plt.show()
+
+import matplotlib.pyplot as plt
+
+# Historical and forecasted data for Boston, MA (inbound net inflow)
+historical_data_boston = [6700, 6600, 6500, 6400, 6300, 6200, 6100, 6000, 5900, 5800]
+forecasted_data_boston = [5800, 5700, 5600]  # Forecasted for the next three time periods
+
+# Time periods
+time_periods = range(1, len(historical_data_boston) + len(forecasted_data_boston) + 1)
+
+# Plot historical data
+plt.plot(time_periods[:len(historical_data_boston)], historical_data_boston, marker='o', linestyle='-', label='Historical Data')
+
+# Plot forecasted data
+plt.plot(time_periods[len(historical_data_boston):], forecasted_data_boston, marker='o', linestyle='--', label='Forecast')
+
+# Add labels and title
+plt.title('Forecast of Inbound Net Inflow for Boston, MA')
+plt.xlabel('Time Period')
+plt.ylabel('Inbound Net Inflow')
+plt.xticks(time_periods)
+plt.grid(True)
+plt.legend()
+
+# Show plot
+plt.tight_layout()
+plt.show()
+
+import matplotlib.pyplot as plt
+
+# Historical and forecasted data for Philadelphia, PA (inbound net inflow)
+historical_data_philadelphia = [3500, 3400, 3300, 3200, 3100, 3000, 2900, 2800, 2700, 2600]
+forecasted_data_philadelphia = [2600, 2500, 2400]  # Forecasted for the next three time periods
+
+# Time periods
+time_periods = range(1, len(historical_data_philadelphia) + len(forecasted_data_philadelphia) + 1)
+
+# Plot historical data
+plt.plot(time_periods[:len(historical_data_philadelphia)], historical_data_philadelphia, marker='o', linestyle='-', label='Historical Data')
+
+# Plot forecasted data
+plt.plot(time_periods[len(historical_data_philadelphia):], forecasted_data_philadelphia, marker='o', linestyle='--', label='Forecast')
+
+# Add labels and title
+plt.title('Forecast of Inbound Net Inflow for Philadelphia, PA')
+plt.xlabel('Time Period')
+plt.ylabel('Inbound Net Inflow')
+plt.xticks(time_periods)
+plt.grid(True)
+plt.legend()
+
+# Show plot
+plt.tight_layout()
+plt.show()
+
+import matplotlib.pyplot as plt
+
+# Historical and forecasted data for Denver, CO (inbound net inflow)
+historical_data_denver = [2900, 2800, 2700, 2600, 2500, 2400, 2300, 2200, 2100, 2000]
+forecasted_data_denver = [2000, 1900, 1800]  # Forecasted for the next three time periods
+
+# Time periods
+time_periods = range(1, len(historical_data_denver) + len(forecasted_data_denver) + 1)
+
+# Plot historical data
+plt.plot(time_periods[:len(historical_data_denver)], historical_data_denver, marker='o', linestyle='-', label='Historical Data')
+
+# Plot forecasted data
+plt.plot(time_periods[len(historical_data_denver):], forecasted_data_denver, marker='o', linestyle='--', label='Forecast')
+
+# Add labels and title
+plt.title('Forecast of Inbound Net Inflow for Denver, CO')
+plt.xlabel('Time Period')
+plt.ylabel('Inbound Net Inflow')
+plt.xticks(time_periods)
+plt.grid(True)
+plt.legend()
+
+# Show plot
+plt.tight_layout()
+plt.show()
+
+import matplotlib.pyplot as plt
+
+# Historical and forecasted data for Dallas, TX (outbound net outflow)
+historical_data_dallas = [1800, 1700, 1600, 1500, 1400, 1300, 1200, 1100, 1000, 900]
+forecasted_data_dallas = [900, 800, 700]  # Forecasted for the next three time periods
+
+# Time periods
+time_periods = range(1, len(historical_data_dallas) + len(forecasted_data_dallas) + 1)
+
+# Plot historical data
+plt.plot(time_periods[:len(historical_data_dallas)], historical_data_dallas, marker='o', linestyle='-', label='Historical Data')
+
+# Plot forecasted data
+plt.plot(time_periods[len(historical_data_dallas):], forecasted_data_dallas, marker='o', linestyle='--', label='Forecast')
+
+# Add labels and title
+plt.title('Forecast of Outbound Net Outflow for Dallas, TX')
+plt.xlabel('Time Period')
+plt.ylabel('Outbound Net Outflow')
+plt.xticks(time_periods)
+plt.grid(True)
+plt.legend()
+
+# Show plot
+plt.tight_layout()
+plt.show()
