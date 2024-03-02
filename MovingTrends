@@ -1,0 +1,57 @@
+# import libraries
+import pandas as pd
+import numpy as np
+from scipy import stats
+from scipy.stats import ttest_ind
+import seaborn as sns
+sns.set()
+import matplotlib.pyplot as plt
+from google.colab import drive
+drive.mount('/content/gdrive')
+
+# read csv
+df = pd.read_csv("/content/gdrive/My Drive/Colab Datasets/movingtrends_top10_nov23-jan24.csv")
+df.head()
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Inbound net inflow data
+inbound_cities = ['Sacramento, CA', 'Las Vegas, NV', 'Sarasota, FL', 'Cape Coral, FL', 'Phoenix, AZ',
+                  'Orlando, FL', 'Myrtle Beach, SC', 'Salisbury, MD', 'Hilo, HI', 'Jacksonville, FL']
+inbound_net_inflow = [5700, 4800, 4600, 4300, 4300, 4000, 3700, 3300, 2900, 2900]
+
+# Outbound net outflow data
+outbound_cities = ['San Francisco, CA', 'Los Angeles, CA', 'New York, NY', 'Seattle, WA', 'Washington DC',
+                   'Chicago, IL', 'Boston, MA', 'Philadelphia, PA', 'Denver, CO', 'Dallas, TX']
+outbound_net_outflow = [26800, 26700, 25900, 18000, 14700, 9800, 6700, 3500, 2900, 1800]
+
+# Combine cities and net flows
+cities = inbound_cities + outbound_cities
+net_flows = inbound_net_inflow + [-val for val in outbound_net_outflow]
+
+# Plot the combined graph
+plt.figure(figsize=(14, 10))  # Increase figure size for better spacing
+
+# Plot inbound net inflow (positive values)
+plt.barh(inbound_cities, inbound_net_inflow, color='blue', label='Inbound Net Inflow', height=0.5)  # Increase bar height
+
+# Plot outbound net outflow (negative values)
+plt.barh(outbound_cities, [-val for val in outbound_net_outflow], color='red', label='Outbound Net Outflow', height=0.5)  # Increase bar height
+
+# Add title and labels
+plt.title('Net Migration Flows for Different Cities', fontsize=16)  # Increase title font size
+plt.xlabel('Net Flow', fontsize=14)  # Increase x-label font size
+plt.ylabel('Cities', fontsize=14)  # Increase y-label font size
+
+# Set x-axis ticks and labels
+plt.xticks(fontsize=12)  # Increase x-tick font size
+
+# Add grid lines
+plt.grid(axis='x', linestyle='--', alpha=0.7)  # Add grid lines only along the x-axis
+
+# Adjust layout for better spacing
+plt.legend(fontsize=12)  # Increase legend font size
+plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)  # Adjust subplot spacing
+
+# Show the plot
+plt.show()
